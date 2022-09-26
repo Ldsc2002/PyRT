@@ -22,3 +22,11 @@ def render() -> None:
 @checkInstanceOnCall
 def write(filename = "rt") -> None:
     RT.write(filename)
+
+@checkInstanceOnCall
+def addToScene(object) -> None:
+    if isinstance(object, list):
+        for item in object:
+            RT.addToScene(item)
+    else:
+        RT.addToScene(object)

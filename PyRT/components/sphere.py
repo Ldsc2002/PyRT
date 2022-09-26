@@ -1,11 +1,15 @@
 from PyRT.lib.utils import *
 
 class Sphere(object): 
-    def __init__(this, center, radius) -> None:
+    def __init__(this, center, radius, color = color(255, 255, 255)) -> None:
         this.center = center
         this.radius = radius
+        this.color = color
 
-    def intersect(this, orig, dir) -> bool:
+    def getColor(this) -> color:
+        return this.color
+
+    def intersect(this, orig, dir) -> color:
         L = sub(this.center, orig)
         tca = dot(L, dir)
         d2 = dot(L, L) - tca * tca

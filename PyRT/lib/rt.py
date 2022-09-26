@@ -5,9 +5,12 @@ class Raytracer(object):
     def __init__(this, width, height) -> None:
         this.width = width
         this.height = height
+        this.scene = []
         this.clearColor = color(0, 0, 0)
         this.currentColor = color(255, 255, 255)
 
+    def addToScene(this, object) -> None:
+        this.scene.append(object)
 
     def clear(this) -> None:
         this.framebuffer = [
@@ -32,15 +35,14 @@ class Raytracer(object):
                 j = (1 - 2 * (y + 0.5) / this.height) * tan(fov / 2)
 
                 origin = V3(0, 0, 0)
-                direction = V3(i, j, -1)
+                direction = norm(V3(i, j, -1))
 
                 c = this.castRay(origin, direction)
                 this.point(x, y, c)
 
     def castRay(this, orig, direction) -> color:
-        sphere = Sphere(V3(0, 0, -16), 1)
+        for object in this.scene:
+            if object.intersect(orig, direction):
+                return object.getColor()
 
-        if sphere.intersect(orig, direction):
-            return this.currentColor
-        else:
-            return this.clearColor
+        return this.clearColor
