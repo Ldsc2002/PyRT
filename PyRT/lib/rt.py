@@ -1,5 +1,7 @@
 from PyRT.lib.utils import *
 from PyRT.components.sphere import *
+from PyRT.components.material import *
+from PyRT.components.intersect import *
 
 class Raytracer(object):
     def __init__(this, width, height) -> None:
@@ -41,8 +43,15 @@ class Raytracer(object):
                 this.point(x, y, c)
 
     def castRay(this, orig, direction) -> color:
-        for object in this.scene:
-            if object.intersect(orig, direction):
-                return object.getColor()
+        zbuffer = float('inf')
+        material = this.clearColor
 
-        return this.clearColor
+        for object in this.scene:
+            newIntersect = object.intersect(orig, direction)
+            
+            if newIntersect:
+                if newIntersect.getDistance() < zbuffer:
+                    zbuffer = newIntersect.getDistance()
+                    material = object.getMaterial().getColor()
+
+        return material
