@@ -4,7 +4,7 @@ from PyRT.components.color import *
 
 class Sphere(object): 
     def __init__(this, center, radius, material) -> None:
-        this.center = center
+        this.center = V3(*center)
         this.radius = radius
         this.material = material
 
