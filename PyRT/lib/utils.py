@@ -1,6 +1,10 @@
 import struct
 from collections import namedtuple
 from math import cos, sin, tan
+from matplotlib import colors
+
+from PyRT.components.color import *
+from PyRT.components.material import *
 
 V2 = namedtuple('Point2D', ['x', 'y'])
 V3 = namedtuple('Point3D', ['x', 'y', 'z'])
@@ -85,6 +89,15 @@ def doubleword(d):
 
 def colorBytes(r, g, b):
     return bytes([b, g, r])
+
+def getColor(name: str) -> material: 
+    newColor = colors.to_rgba(name)
+
+    return material(color(
+        int(newColor[0] * 255),
+        int(newColor[1] * 255),
+        int(newColor[2] * 255)
+    ))
 
 def writeBMP(pixels, name):
     # Prints the pixels to the screen
