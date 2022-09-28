@@ -1,5 +1,5 @@
 from PyRT.lib.utils import *
-from PyRT.components.sphere import *
+from PyRT.figures.sphere import *
 from PyRT.components.material import *
 from PyRT.components.intersect import *
 from PyRT.components.light import *
