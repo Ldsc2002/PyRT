@@ -1,15 +1,13 @@
 from PyRT.lib.utils import *
 from PyRT.components.intersect import *
-from PyRT.components.color import *
+from PyRT.components.material import *
+from PyRT.figures.figure import *
 
-class Sphere(object): 
+class Sphere(Figure): 
     def __init__(this, center, radius, material) -> None:
         this.center = V3(*center)
         this.radius = radius
         this.material = material
-
-    def getMaterial(this) -> color:
-        return this.material
 
     def intersect(this, orig, dir) -> intersect:
         L = sub(this.center, orig)
