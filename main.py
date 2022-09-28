@@ -1,12 +1,13 @@
 from PyRT.driver import *
 
 if __name__ == "__main__":
-    white = Material(color(255, 255, 255))
-    red = Material(color(255, 0, 0))
+    white = material(color(255, 255, 255))
+    red = material(color(255, 0, 0))
 
-    objects = [        
-        Sphere((0, 3, -15), 3, white),
-        Sphere((0, 0, -10), 2, red)
+    objects = [      
+        cube((0, 0, -8), 2, white),  
+        sphere((0, 3, -15), 3, white),
+        sphere((0, 0, -10), 2, red)
     ]
 
     addToScene(objects)

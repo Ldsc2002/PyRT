@@ -3,7 +3,7 @@ from PyRT.components.intersect import *
 from PyRT.components.material import *
 from PyRT.figures.figure import *
 
-class Sphere(Figure): 
+class sphere(figure): 
     def __init__(this, center, radius, material) -> None:
         this.center = V3(*center)
         this.radius = radius
