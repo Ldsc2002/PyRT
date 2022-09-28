@@ -1,6 +1,3 @@
-from PyRT.lib.utils import *
-from PyRT.components.intersect import *
-from PyRT.components.material import *
 from PyRT.figures.figure import *
 
 class sphere(figure): 
