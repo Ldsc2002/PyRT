@@ -83,7 +83,7 @@ def word(w):
 def doubleword(d):
     return struct.pack('=l', d)
 
-def color(r, g, b):
+def colorBytes(r, g, b):
     return bytes([b, g, r])
 
 def writeBMP(pixels, name):

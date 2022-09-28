@@ -1,5 +1,6 @@
 from PyRT.lib.utils import *
 from PyRT.components.intersect import *
+from PyRT.components.color import *
 
 class Sphere(object): 
     def __init__(this, center, radius, material) -> None:
@@ -24,4 +25,7 @@ class Sphere(object):
         if t0 < 0: t0 = t1
         if t0 < 0: return None
         
-        return intersect(t0)
+        impact = sumV3(orig, mul(dir, t0))
+        normal = norm(sub(impact, this.center))
+
+        return intersect(t0, impact, normal)

@@ -2,6 +2,8 @@ from PyRT.lib.utils import *
 from PyRT.components.sphere import *
 from PyRT.components.material import *
 from PyRT.components.intersect import *
+from PyRT.components.light import *
+from PyRT.components.color import *
 
 class Raytracer(object):
     def __init__(this, width, height) -> None:
@@ -10,6 +12,7 @@ class Raytracer(object):
         this.scene = []
         this.clearColor = color(0, 0, 0)
         this.currentColor = color(255, 255, 255)
+        this.light = light(V3(0, 0, 0), 1)
 
     def addToScene(this, object) -> None:
         this.scene.append(object)
@@ -22,7 +25,7 @@ class Raytracer(object):
 
     def point(this, x: int, y: int, color = None) -> None:
         if y >= 0 and y < this.height and x >= 0 and x < this.width:
-            this.framebuffer[y][x] = color or this.currentColor
+            this.framebuffer[y][x] = color.toBytes() or this.currentColor
 
     def write(this, filename = "rt") -> None:
         writeBMP(this.framebuffer, filename)
@@ -39,19 +42,30 @@ class Raytracer(object):
                 origin = V3(0, 0, 0)
                 direction = norm(V3(i, j, -1))
 
-                c = this.castRay(origin, direction)
-                this.point(x, y, c)
+                c, newIntersect  = this.castRay(origin, direction)
 
-    def castRay(this, orig, direction) -> color:
+                if newIntersect:
+                    lightDir = norm(sub(this.light.getPosition(), newIntersect.getPoint()))
+                    lightIntensity = dot(lightDir, newIntersect.getNormal())
+
+                    diffuse = c * lightIntensity
+
+                    this.point(x, y, diffuse)
+                else:
+                    this.point(x, y, c)
+
+
+    def castRay(this, orig, direction):
         zbuffer = float('inf')
         material = this.clearColor
+        newIntersect = None
 
         for object in this.scene:
-            newIntersect = object.intersect(orig, direction)
-            
-            if newIntersect:
-                if newIntersect.getDistance() < zbuffer:
-                    zbuffer = newIntersect.getDistance()
-                    material = object.getMaterial().getColor()
+            tempIntersect = object.intersect(orig, direction)
 
-        return material
+            if tempIntersect and tempIntersect.getDistance() < zbuffer:
+                newIntersect = tempIntersect
+                zbuffer = newIntersect.getDistance()
+                material = object.getMaterial().getColor()
+
+        return material, newIntersect
