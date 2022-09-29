@@ -8,5 +8,5 @@ if __name__ == "__main__":
     ]
 
     addToScene(objects)
-    render()
+    render(0.5)
     write()
