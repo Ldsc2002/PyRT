@@ -19,6 +19,7 @@ def point(x: int, y: int, color = None) -> None:
 def render(density = None) -> None:
     if density:
         RT.setDensity(density)
+        
     RT.render()
 
 @checkInstanceOnCall

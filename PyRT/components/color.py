@@ -7,24 +7,31 @@ class color(object):
         this.b = b
 
     def __add__(this, other):
-        return color(
-            this.r + other.r,
-            this.g + other.g,
-            this.b + other.b
-        )
+        if type(other) is color:
+            return color(
+                min((this.r + other.r), 255),
+                min((this.g + other.g), 255),
+                min((this.b + other.b), 255)
+            )
+        else:
+            return color(
+                min((this.r + other), 255),
+                min((this.g + other), 255),
+                min((this.b + other), 255)
+            )
 
     def __mul__(this, other):
         if type(other) is color:
             return color(
-                this.r * other.r,
-                this.g * other.g,
-                this.b * other.b
+                min((this.r * other.r), 255),
+                min((this.g * other.g), 255),
+                min((this.b * other.b), 255)
             )
         else:
             return color(
-                this.r * other,
-                this.g * other,
-                this.b * other
+                min((this.r * other), 255),
+                min((this.g * other), 255),
+                min((this.b * other), 255)
             )
 
     def toBytes(this) -> bytes:

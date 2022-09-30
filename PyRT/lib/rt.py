@@ -1,3 +1,4 @@
+from turtle import pos
 from PyRT.lib.utils import *
 from PyRT.figures.sphere import *
 from PyRT.figures.cube import *
@@ -12,9 +13,9 @@ class Raytracer(object):
         this.width = width
         this.height = height
         this.scene = []
-        this.clearColor = color(0, 0, 0)
-        this.currentColor = color(255, 255, 255)
-        this.light = light(V3(0, 0, 0), 1)
+        this.clearColor = material(color(0, 0, 0))
+        this.currentColor = material(color(255, 255, 255))
+        this.light = light(V3(0, 0, 0), 1, color(255, 255, 255))
         this.density = density
 
     def addToScene(this, object) -> None:
@@ -22,19 +23,22 @@ class Raytracer(object):
 
     def clear(this) -> None:
         this.framebuffer = [
-            [this.clearColor.toBytes() for x in range(this.width)]
+            [this.clearColor.getColor().toBytes() for x in range(this.width)]
             for y in range(this.height)
         ]
 
-    def point(this, x: int, y: int, color = None) -> None:
+    def point(this, x: int, y: int, newColor = None) -> None:
         if y >= 0 and y < this.height and x >= 0 and x < this.width:
-            this.framebuffer[y][x] = color.toBytes() or this.currentColor.toBytes()
+            this.framebuffer[y][x] = newColor.toBytes() or this.currentColor.getColor().toBytes()
 
     def write(this, filename = "rt") -> None:
         writeBMP(this.framebuffer, filename)
 
     def setDensity(this, density) -> None:
         this.density = density
+
+    def setLight(this, position = (0, 0, 0), intensity = 1, color = color(255, 255, 255)) -> None:
+        this.light = light(V3(*position), intensity, color)
 
     def render(this) -> None:
         fov = int(pi/2)
@@ -49,22 +53,29 @@ class Raytracer(object):
                     origin = V3(0, 0, 0)
                     direction = norm(V3(i, j, -1))
 
-                    c, newIntersect  = this.castRay(origin, direction)
+                    newMaterial, newIntersect  = this.castRay(origin, direction)
 
                     if newIntersect:
                         lightDir = norm(sub(this.light.getPosition(), newIntersect.getPoint()))
-                        lightIntensity = dot(lightDir, newIntersect.getNormal())
 
-                        diffuse = c * lightIntensity
+                        diffuseIntensity = dot(lightDir, newIntersect.getNormal())
+                        diffuse = newMaterial.getColor() * diffuseIntensity * newMaterial.getAlbedo()[0]
 
-                        this.point(x, y, diffuse)
+                        reflection = this.reflect(lightDir, newIntersect.getNormal())
+                        reflectionIntensity = max(dot(reflection, direction), 0)
+                        specularIntensity = this.light.getIntensity() * reflectionIntensity ** newMaterial.spec
+                        specular = this.light.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
+
+                        this.point(x, y, diffuse + specular)
                     else:
-                        this.point(x, y, c)
+                        this.point(x, y, newMaterial.getColor())
 
+    def reflect(this, direction, normal):
+        return (sub(direction, mul(normal, 2 * dot(direction, normal))))
 
     def castRay(this, orig, direction):
         zbuffer = float('inf')
-        material = this.clearColor
+        newMaterial = this.clearColor
         newIntersect = None
 
         for object in this.scene:
@@ -73,6 +84,7 @@ class Raytracer(object):
             if tempIntersect and tempIntersect.getDistance() < zbuffer:
                 newIntersect = tempIntersect
                 zbuffer = newIntersect.getDistance()
-                material = object.getMaterial().getColor()
 
-        return material, newIntersect
+                newMaterial = object.getMaterial()
+
+        return newMaterial, newIntersect
