@@ -33,3 +33,7 @@ def addToScene(object) -> None:
             RT.addToScene(item)
     else:
         RT.addToScene(object)
+
+@checkInstanceOnCall
+def setLight(position = (0, 0, 0), intensity = 1, color = color(255, 255, 255)) -> None:
+    RT.setLight(position, intensity, color)
