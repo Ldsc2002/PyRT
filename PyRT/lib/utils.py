@@ -1,7 +1,6 @@
 import struct
 from collections import namedtuple
 from math import cos, sin, tan
-from matplotlib import colors
 import importlib, os, sys
 
 from PyRT.components.color import *
@@ -12,24 +11,27 @@ V3 = namedtuple('Point3D', ['x', 'y', 'z'])
 V4 = namedtuple('Point4D', ['x', 'y', 'z', 'w'])
 pi = 3.141592653589793238
 
-def importDependency(modname:str)->None:
+def importDependency(moduleName:str) -> None:
     try:
-        importlib.import_module(modname)
+        importlib.import_module(moduleName)
     except ImportError:
-        print(modname + " not found, installing...")
+        print(moduleName + " not found, installing...")
         if os.system('PIP --version') == 0:
-            os.system(f'PIP install {modname}')
+            os.system(f'PIP install {moduleName}')
         else:
             pip_location_attempt_1 = sys.executable.replace("python.exe", "") + "pip.exe"
             pip_location_attempt_2 = sys.executable.replace("python.exe", "") + "scripts\pip.exe"
             if os.path.exists(pip_location_attempt_1):
-                os.system(pip_location_attempt_1 + " install " + modname)
+                os.system(pip_location_attempt_1 + " install " + moduleName)
             elif os.path.exists(pip_location_attempt_2):
-                os.system(pip_location_attempt_2 + " install " + modname)
+                os.system(pip_location_attempt_2 + " install " + moduleName)
             else:
                 print("Error: Unable to find PIP")
-                print(f"You'll need to manually install the Module: {modname} in order for this program to work.")
+                print(f"You'll need to manually install the Module: {moduleName} in order for this program to work.")
                 exit()
+            
+importDependency("matplotlib")
+from matplotlib import colors
 
 def sumV3(v0, v1):
     if type(v0) == V3:
