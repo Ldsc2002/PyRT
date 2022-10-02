@@ -2,6 +2,7 @@ import struct
 from collections import namedtuple
 from math import cos, sin, tan
 from matplotlib import colors
+import importlib, os, sys
 
 from PyRT.components.color import *
 from PyRT.components.material import *
@@ -10,6 +11,25 @@ V2 = namedtuple('Point2D', ['x', 'y'])
 V3 = namedtuple('Point3D', ['x', 'y', 'z'])
 V4 = namedtuple('Point4D', ['x', 'y', 'z', 'w'])
 pi = 3.141592653589793238
+
+def importDependency(modname:str)->None:
+    try:
+        importlib.import_module(modname)
+    except ImportError:
+        print(modname + " not found, installing...")
+        if os.system('PIP --version') == 0:
+            os.system(f'PIP install {modname}')
+        else:
+            pip_location_attempt_1 = sys.executable.replace("python.exe", "") + "pip.exe"
+            pip_location_attempt_2 = sys.executable.replace("python.exe", "") + "scripts\pip.exe"
+            if os.path.exists(pip_location_attempt_1):
+                os.system(pip_location_attempt_1 + " install " + modname)
+            elif os.path.exists(pip_location_attempt_2):
+                os.system(pip_location_attempt_2 + " install " + modname)
+            else:
+                print("Error: Unable to find PIP")
+                print(f"You'll need to manually install the Module: {modname} in order for this program to work.")
+                exit()
 
 def sumV3(v0, v1):
     if type(v0) == V3:
