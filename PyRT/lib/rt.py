@@ -1,4 +1,3 @@
-from turtle import pos
 from PyRT.lib.utils import *
 from PyRT.figures.sphere import *
 from PyRT.figures.cube import *
@@ -7,6 +6,10 @@ from PyRT.components.intersect import *
 from PyRT.components.light import *
 from PyRT.components.color import *
 from random import uniform
+
+importDependency("tqdm")
+from tqdm import tqdm
+
 
 class Raytracer(object):
     def __init__(this, width, height, density = 1) -> None:
@@ -44,7 +47,7 @@ class Raytracer(object):
         fov = int(pi/2)
         aspectRatio = this.width / this.height
 
-        for y in range(this.height):
+        for y in tqdm (range (this.height), desc="Rendering..."):
             for x in range(this.width):
                 if uniform(0, 1) < this.density:
                     i = (2 * (x + 0.5) / this.width - 1) * tan(fov / 2) * aspectRatio
