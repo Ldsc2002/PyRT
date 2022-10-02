@@ -12,14 +12,32 @@ V4 = namedtuple('Point4D', ['x', 'y', 'z', 'w'])
 pi = 3.141592653589793238
 
 def sumV3(v0, v1):
-    return V3(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z)
+    if type(v0) == V3:
+        return V3(
+            v0.x + v1.x,
+            v0.y + v1.y,
+            v0.z + v1.z
+        )
+    else:
+        return V3(
+            v0.x + v1,
+            v0.y + v1,
+            v0.z + v1,
+        )
 
 def sub(v0, v1):
-	return V3(
-		v0.x - v1.x,
-		v0.y - v1.y,
-		v0.z - v1.z
-	)
+    if type(v0) == V3:
+        return V3(
+            v0.x - v1.x,
+            v0.y - v1.y,
+            v0.z - v1.z
+        )
+    else:
+        return V3(
+            v0.x - v1,
+            v0.y - v1,
+            v0.z - v1,
+        )
 
 def mul(v0, k):
     return V3(v0.x * k, v0.y * k, v0.z *k)
@@ -93,11 +111,11 @@ def colorBytes(r, g, b):
 def getColor(name: str) -> material: 
     newColor = colors.to_rgba(name)
 
-    return material(color(
+    return color(
         int(newColor[0] * 255),
         int(newColor[1] * 255),
         int(newColor[2] * 255)
-    ))
+    )
 
 def writeBMP(pixels, name):
     # Prints the pixels to the screen
@@ -129,7 +147,7 @@ def writeBMP(pixels, name):
 
     for y in range (0, height):
         for x in range (0, width):
-            f.write(pixels[y][x])
+            f.write(pixels[x][y])
 
     f.close()
     print('Image saved as ' + name)

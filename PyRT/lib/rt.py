@@ -23,13 +23,13 @@ class Raytracer(object):
 
     def clear(this) -> None:
         this.framebuffer = [
-            [this.clearColor.getColor().toBytes() for x in range(this.width)]
-            for y in range(this.height)
+            [this.clearColor.getColor().toBytes() for y in range(this.height)]
+            for x in range(this.width)
         ]
 
     def point(this, x: int, y: int, newColor = None) -> None:
         if y >= 0 and y < this.height and x >= 0 and x < this.width:
-            this.framebuffer[y][x] = newColor.toBytes() or this.currentColor.getColor().toBytes()
+            this.framebuffer[x][y] = newColor.toBytes() or this.currentColor.getColor().toBytes()
 
     def write(this, filename = "rt") -> None:
         writeBMP(this.framebuffer, filename)
