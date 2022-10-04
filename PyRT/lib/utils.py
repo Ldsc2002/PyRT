@@ -18,6 +18,8 @@ def importDependency(moduleName:str) -> None:
         print(moduleName + " not found, installing...")
         if os.system('PIP --version') == 0:
             os.system(f'PIP install {moduleName}')
+        elif (os.system('pip3 --version') == 0):
+            os.system(f'pip3 install {moduleName}')
         else:
             pip_location_attempt_1 = sys.executable.replace("python.exe", "") + "pip.exe"
             pip_location_attempt_2 = sys.executable.replace("python.exe", "") + "scripts\pip.exe"
