@@ -3,9 +3,6 @@ from collections import namedtuple
 from math import cos, sin, tan
 import importlib, os, sys
 
-from PyRT.components.color import *
-from PyRT.components.material import *
-
 V2 = namedtuple('Point2D', ['x', 'y'])
 V3 = namedtuple('Point3D', ['x', 'y', 'z'])
 V4 = namedtuple('Point4D', ['x', 'y', 'z', 'w'])
@@ -130,10 +127,10 @@ def doubleword(d):
 def colorBytes(r, g, b):
     return bytes([b, g, r])
 
-def getColor(name: str) -> material: 
+def getColorValues(name: str) -> tuple:
     newColor = colors.to_rgba(name)
 
-    return color(
+    return (
         int(newColor[0] * 255),
         int(newColor[1] * 255),
         int(newColor[2] * 255)

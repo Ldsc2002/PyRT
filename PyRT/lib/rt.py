@@ -16,9 +16,9 @@ class Raytracer(object):
         this.width = width
         this.height = height
         this.scene = []
-        this.clearColor = material(color(0, 0, 0))
-        this.currentColor = material(color(255, 255, 255))
-        this.light = light(V3(0, 0, 0), 1, color(255, 255, 255))
+        this.clearColor = material((0, 0, 0))
+        this.currentColor = material((255, 255, 255))
+        this.light = light(V3(0, 0, 0), 1, (255, 255, 255))
         this.density = density
 
     def addToScene(this, object) -> None:
@@ -30,9 +30,9 @@ class Raytracer(object):
             for x in range(this.width)
         ]
 
-    def point(this, x: int, y: int, newColor = None) -> None:
+    def point(this, x: int, y: int, diffuse = None) -> None:
         if y >= 0 and y < this.height and x >= 0 and x < this.width:
-            this.framebuffer[x][y] = newColor.toBytes() or this.currentColor.getColor().toBytes()
+            this.framebuffer[x][y] = diffuse.toBytes() or this.currentColor.getColor().toBytes()
 
     def write(this, filename = "rt") -> None:
         writeBMP(this.framebuffer, filename)
@@ -40,8 +40,8 @@ class Raytracer(object):
     def setDensity(this, density) -> None:
         this.density = density
 
-    def setLight(this, position = (0, 0, 0), intensity = 1, color = color(255, 255, 255)) -> None:
-        this.light = light(V3(*position), intensity, color)
+    def setLight(this, position = (0, 0, 0), intensity = 1, diffuse = (255, 255, 255)) -> None:
+        this.light = light(V3(*position), intensity, diffuse)
 
     def render(this) -> None:
         fov = int(pi/2)

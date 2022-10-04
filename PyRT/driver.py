@@ -12,8 +12,8 @@ def init(width: int = 1000, height: int = 1000, intensity = 1) -> None:
     RT.clear()
 
 @checkInstanceOnCall
-def point(x: int, y: int, color = None) -> None:
-    RT.point(x, y, color)
+def point(x: int, y: int, diffuse = None) -> None:
+    RT.point(x, y, diffuse)
 
 @checkInstanceOnCall
 def render(density = None, name = None) -> None:
@@ -45,5 +45,5 @@ def addToScene(object, translation = None) -> None:
         RT.addToScene(object)
 
 @checkInstanceOnCall
-def setLight(position = (0, 0, 0), intensity = 1, color = color(255, 255, 255)) -> None:
-    RT.setLight(position, intensity, color)
+def setLight(position = (0, 0, 0), intensity = 1, diffuse = (255, 255, 255)) -> None:
+    RT.setLight(position, intensity, diffuse)

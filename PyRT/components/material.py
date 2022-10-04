@@ -1,13 +1,8 @@
-from PyRT.lib import utils
 from PyRT.components.color import *
 
 class material(object):
     def __init__(this, diffuse, albedo = [1, 0, 0, 0], spec = 0) -> None:
-        if type(diffuse) is str:
-            this.diffuse = utils.getColor(diffuse)
-        else:
-            this.diffuse = diffuse
-        
+        this.diffuse = color(diffuse)       
         this.albedo = albedo
         this.spec = spec
 
