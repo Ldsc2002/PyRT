@@ -18,7 +18,7 @@ class Raytracer(object):
         this.scene = []
         this.clearColor = material((0, 0, 0))
         this.currentColor = material((255, 255, 255))
-        this.light = light(V3(0, 0, 0), 1, (255, 255, 255))
+        this.lightSource = light((0, 0, 0), 1, (255, 255, 255))
         this.density = density
 
     def addToScene(this, object) -> None:
@@ -41,7 +41,7 @@ class Raytracer(object):
         this.density = density
 
     def setLight(this, position = (0, 0, 0), intensity = 1, diffuse = (255, 255, 255)) -> None:
-        this.light = light(V3(*position), intensity, diffuse)
+        this.lightSource = light((position), intensity, diffuse)
 
     def render(this) -> None:
         fov = int(pi/2)
@@ -59,15 +59,15 @@ class Raytracer(object):
                     newMaterial, newIntersect  = this.castRay(origin, direction)
 
                     if newIntersect:
-                        lightDir = norm(sub(this.light.getPosition(), newIntersect.getPoint()))
+                        lightDir = norm(sub(this.lightSource.getPosition(), newIntersect.getPoint()))
 
                         diffuseIntensity = dot(lightDir, newIntersect.getNormal())
                         diffuse = newMaterial.getColor() * diffuseIntensity * newMaterial.getAlbedo()[0]
 
                         reflection = this.reflect(lightDir, newIntersect.getNormal())
                         reflectionIntensity = max(dot(reflection, direction), 0)
-                        specularIntensity = this.light.getIntensity() * reflectionIntensity ** newMaterial.spec
-                        specular = this.light.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
+                        specularIntensity = this.lightSource.getIntensity() * reflectionIntensity ** newMaterial.spec
+                        specular = this.lightSource.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
 
                         this.point(x, y, diffuse + specular)
                     else:

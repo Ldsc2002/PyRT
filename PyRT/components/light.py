@@ -3,7 +3,7 @@ from PyRT.lib.utils import *
 
 class light(object):
     def __init__(this, position, intensity = 1, diffuse = (255, 255, 255)) -> None:
-        this.position = position
+        this.position = V3(*position)
         this.intensity = intensity
         this.diffuse = color(diffuse)
 
