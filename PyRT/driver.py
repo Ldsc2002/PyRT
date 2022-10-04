@@ -16,7 +16,7 @@ def point(x: int, y: int, diffuse = None) -> None:
     RT.point(x, y, diffuse)
 
 @checkInstanceOnCall
-def render(density = None, name = None) -> None:
+def render(name = None, density = None) -> None:
     if density:
         RT.setDensity(density)
         

@@ -48,4 +48,4 @@ init(1920, 1080)
 addToScene(whiteBear, (-3.5, 0, 0))
 addToScene(orangeBear, (3.5, 0, 0))
 
-render(1, "bears")
+render("bears")
