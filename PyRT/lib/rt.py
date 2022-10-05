@@ -10,7 +10,6 @@ from random import uniform
 importDependency("tqdm")
 from tqdm import tqdm
 
-
 class Raytracer(object):
     def __init__(this, width, height, density = 1) -> None:
         this.width = width
@@ -69,7 +68,12 @@ class Raytracer(object):
                         specularIntensity = this.lightSource.getIntensity() * reflectionIntensity ** newMaterial.spec
                         specular = this.lightSource.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
 
-                        this.point(x, y, diffuse + specular)
+                        offsetNormal = mul(newIntersect.getNormal(), 1.1)
+                        shadowOrigin = sub(newIntersect.getPoint(), offsetNormal) if diffuseIntensity < 0 else sumV3(newIntersect.getPoint(), offsetNormal)
+                        shadowMaterial, shadowIntersect = this.castRay(shadowOrigin, lightDir)
+                        shadowIntensity = 0.7 if shadowIntersect else 1
+
+                        this.point(x, y, (diffuse + specular) * shadowIntensity)
                     else:
                         this.point(x, y, newMaterial.getColor())
 
