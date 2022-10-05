@@ -67,7 +67,7 @@ class Raytracer(object):
         newMaterial, newIntersect = this.sceneIntersect(orig, direction)
 
         if recursion == maxRecursionDepth:
-            return newMaterial, newIntersect
+            return newMaterial.getColor()
 
         if newIntersect:
             lightDir = norm(sub(this.lightSource.getPosition(), newIntersect.getPoint()))
@@ -91,8 +91,8 @@ class Raytracer(object):
                     reverse = mul(direction, -1)
                     reflectDir = this.reflect(reverse, newIntersect.getNormal())
                     reflectOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), 1.1))
-                    reflectColor, reflectIntersect = this.sceneIntersect(reflectOrigin, reflectDir)
-                    reflectColor = reflectColor.getColor() * newMaterial.getAlbedo()[2]
+                    reflectColor = this.castRay(reflectOrigin, reflectDir, recursion + 1)
+                    reflectColor = reflectColor * newMaterial.getAlbedo()[2]
 
                     return ((diffuse + specular) * shadowIntensity + reflectColor)
                 else:
