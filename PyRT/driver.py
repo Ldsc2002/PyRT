@@ -47,3 +47,10 @@ def addToScene(object, translation = None) -> None:
 @checkInstanceOnCall
 def setLight(position = (0, 0, 0), intensity = 1, diffuse = (255, 255, 255)) -> None:
     RT.setLight(position, intensity, diffuse)
+
+@checkInstanceOnCall
+def clear(color = None) -> None:
+    if color:
+        RT.setClearColor(color)
+
+    RT.clear()

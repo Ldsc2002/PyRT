@@ -25,6 +25,9 @@ class Raytracer(object):
     def addToScene(this, object) -> None:
         this.scene.append(object)
 
+    def setClearColor(this, color) -> None:
+        this.clearColor = material(color)
+
     def clear(this) -> None:
         this.framebuffer = [
             [this.clearColor.getColor().toBytes() for y in range(this.height)]
@@ -73,36 +76,33 @@ class Raytracer(object):
             lightDir = norm(sub(this.lightSource.getPosition(), newIntersect.getPoint()))
 
             diffuseIntensity = dot(lightDir, newIntersect.getNormal())
+            diffuse = newMaterial.getColor() * diffuseIntensity * newMaterial.getAlbedo()[0]
 
-            if diffuseIntensity > 0:
-                diffuse = newMaterial.getColor() * diffuseIntensity * newMaterial.getAlbedo()[0]
+            reflection = this.reflect(lightDir, newIntersect.getNormal())
+            reflectionIntensity = max(dot(reflection, direction), 0)
+            specularIntensity = this.lightSource.getIntensity() * reflectionIntensity ** newMaterial.spec
 
-                reflection = this.reflect(lightDir, newIntersect.getNormal())
-                reflectionIntensity = max(dot(reflection, direction), 0)
-                specularIntensity = this.lightSource.getIntensity() * reflectionIntensity ** newMaterial.spec
-                specular = this.lightSource.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
+            specular = this.lightSource.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
 
-                offsetNormal = mul(newIntersect.getNormal(), 1.1)
-                shadowOrigin = sub(newIntersect.getPoint(), offsetNormal) if diffuseIntensity < 0 else sumV3(newIntersect.getPoint(), offsetNormal)
-                shadowMaterial, shadowIntersect = this.sceneIntersect(shadowOrigin, lightDir)
-                shadowIntensity = 0.7 if shadowIntersect else 1
+            offsetNormal = mul(newIntersect.getNormal(), 1.1)
+            shadowOrigin = sub(newIntersect.getPoint(), offsetNormal) if diffuseIntensity < 0 else sumV3(newIntersect.getPoint(), offsetNormal)
+            
+            shadowMaterial, shadowIntersect = this.sceneIntersect(shadowOrigin, lightDir)
+            shadowIntensity = 0.7 if shadowIntersect else 1
 
-                if len(newMaterial.getAlbedo()) > 2 and newMaterial.getAlbedo()[2] > 0:
-                    reverse = mul(direction, -1)
-                    reflectDir = this.reflect(reverse, newIntersect.getNormal())
-                    reflectOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), 1.1))
-                    reflectColor = this.castRay(reflectOrigin, reflectDir, recursion + 1)
-                    reflectColor = reflectColor * newMaterial.getAlbedo()[2]
+            if len(newMaterial.getAlbedo()) > 2 and newMaterial.getAlbedo()[2] > 0:
+                reverse = mul(direction, -1)
+                reflectDir = this.reflect(reverse, newIntersect.getNormal())
+                reflectOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), 1.1))
+                reflectColor = this.castRay(reflectOrigin, reflectDir, recursion + 1)
+                reflectColor = reflectColor * newMaterial.getAlbedo()[2]
 
-                    return ((diffuse + specular) * shadowIntensity + reflectColor)
-                else:
-                    return((diffuse + specular) * shadowIntensity)
+                return ((diffuse + specular) * shadowIntensity + reflectColor)
             else:
-                return this.clearColor.getColor()
+                return((diffuse + specular) * shadowIntensity)
+      
         else:
             return(newMaterial.getColor())
-
-
 
     def render(this) -> None:
         fov = int(pi/2)
@@ -120,40 +120,3 @@ class Raytracer(object):
                     newColor  = this.castRay(origin, direction)
 
                     this.point(x, y, newColor)
-
-
-                    # if newIntersect:
-                    #     lightDir = norm(sub(this.lightSource.getPosition(), newIntersect.getPoint()))
-
-                    #     diffuseIntensity = dot(lightDir, newIntersect.getNormal())
-
-                    #     if diffuseIntensity < 0:
-                    #         this.point(x, y, this.clearColor.getColor())
-                    #     else:
-                    #         diffuse = newMaterial.getColor() * diffuseIntensity * newMaterial.getAlbedo()[0]
-
-                    #         reflection = this.reflect(lightDir, newIntersect.getNormal())
-                    #         reflectionIntensity = max(dot(reflection, direction), 0)
-                    #         specularIntensity = this.lightSource.getIntensity() * reflectionIntensity ** newMaterial.spec
-                    #         specular = this.lightSource.getColor() * specularIntensity * newMaterial.getAlbedo()[1]
-
-                    #         offsetNormal = mul(newIntersect.getNormal(), 1.1)
-                    #         shadowOrigin = sub(newIntersect.getPoint(), offsetNormal) if diffuseIntensity < 0 else sumV3(newIntersect.getPoint(), offsetNormal)
-                    #         shadowMaterial, shadowIntersect = this.castRay(shadowOrigin, lightDir)
-                    #         shadowIntensity = 0.7 if shadowIntersect else 1
-
-                    #         if len(newMaterial.getAlbedo()) > 2:
-                    #             if newMaterial.getAlbedo()[2] > 0:
-                    #                 reverse = mul(direction, -1)
-                    #                 reflectDir = this.reflect(reverse, newIntersect.getNormal())
-                    #                 reflectOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), 1.1))
-                    #                 reflectColor, reflectIntersect = this.castRay(reflectOrigin, reflectDir)
-                    #                 reflectColor = reflectColor.getColor() * newMaterial.getAlbedo()[2]
-                    #             else:
-                    #                 reflectColor = color(0, 0, 0)
-
-                    #             this.point(x, y, (diffuse + specular) * shadowIntensity + reflectColor)
-                    #         else:
-                    #             this.point(x, y, (diffuse + specular) * shadowIntensity)
-                    # else:
-                    #     this.point(x, y, newMaterial.getColor())
