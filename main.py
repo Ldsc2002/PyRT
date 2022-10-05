@@ -10,5 +10,6 @@ objects = [
     sphere((-2, 2, -10), 2, glossWhite),
 ]
 
+setLight((-20, 20, 20), 2, "white")
 addToScene(objects)
 render("rt")
