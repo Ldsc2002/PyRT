@@ -13,4 +13,4 @@ objects = [
 setLight((-20, 20, 20), 2, "white")
 addToScene(objects)
 clear("grey")
-render("rt")
+render("rt", 1, 5)

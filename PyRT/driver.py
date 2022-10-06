@@ -16,7 +16,10 @@ def point(x: int, y: int, diffuse = None) -> None:
     RT.point(x, y, diffuse)
 
 @checkInstanceOnCall
-def render(name = None, density = None) -> None:
+def render(name = None, density = None, maxRecursionDepth = None) -> None:
+    if maxRecursionDepth:
+        RT.setRecursionDepth(maxRecursionDepth)
+    
     if density:
         RT.setDensity(density)
         
@@ -47,6 +50,10 @@ def addToScene(object, translation = None) -> None:
 @checkInstanceOnCall
 def setLight(position = (0, 0, 0), intensity = 1, diffuse = (255, 255, 255)) -> None:
     RT.setLight(position, intensity, diffuse)
+
+@checkInstanceOnCall
+def setRecursionDepth(depth: int) -> None:
+    RT.setRecursionDepth(depth)
 
 @checkInstanceOnCall
 def clear(color = None) -> None:

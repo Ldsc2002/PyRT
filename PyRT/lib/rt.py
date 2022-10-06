@@ -10,8 +10,6 @@ from random import uniform
 importDependency("tqdm")
 from tqdm import tqdm
 
-maxRecursionDepth = 3
-
 class Raytracer(object):
     def __init__(this, width, height, density = 1) -> None:
         this.width = width
@@ -21,6 +19,10 @@ class Raytracer(object):
         this.currentColor = material((255, 255, 255))
         this.lightSource = light((0, 0, 0), 1, (255, 255, 255))
         this.density = density
+        this.maxRecursionDepth = 3
+
+    def setRecursionDepth(this, depth: int) -> None:
+        this.maxRecursionDepth = depth
 
     def addToScene(this, object) -> None:
         this.scene.append(object)
@@ -69,7 +71,7 @@ class Raytracer(object):
     def castRay(this, orig, direction, recursion = 0):
         newMaterial, newIntersect = this.sceneIntersect(orig, direction)
 
-        if recursion == maxRecursionDepth:
+        if recursion == this.maxRecursionDepth:
             return newMaterial.getColor()
 
         if newIntersect:
