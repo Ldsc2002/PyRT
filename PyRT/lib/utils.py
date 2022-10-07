@@ -33,7 +33,7 @@ importDependency("matplotlib")
 from matplotlib import colors
 
 def sumV3(v0, v1):
-    if type(v0) == V3:
+    if type(v1) == V3:
         return V3(
             v0.x + v1.x,
             v0.y + v1.y,
@@ -47,7 +47,7 @@ def sumV3(v0, v1):
         )
 
 def sub(v0, v1):
-    if type(v0) == V3:
+    if type(v1) == V3:
         return V3(
             v0.x - v1.x,
             v0.y - v1.y,
@@ -60,9 +60,19 @@ def sub(v0, v1):
             v0.z - v1,
         )
 
-def mul(v0, k):
-    return V3(v0.x * k, v0.y * k, v0.z *k)
-
+def mul(v0, v1):
+    if type(v1) == V3:
+        return V3(
+            v0.x * v1.x,
+            v0.y * v1.y,
+            v0.z * v1.z
+        )
+    else:
+        return V3(
+            v0.x * v1,
+            v0.y * v1,
+            v0.z * v1,
+        )
 def dot(v0, v1):
     return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z
 
