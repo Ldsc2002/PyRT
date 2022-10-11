@@ -6,6 +6,7 @@ from PyRT.components.intersect import *
 from PyRT.components.light import *
 from PyRT.components.color import *
 from random import uniform
+from math import sqrt
 
 importDependency("tqdm")
 from tqdm import tqdm
@@ -52,6 +53,26 @@ class Raytracer(object):
     def reflect(this, direction, normal):
         return (sub(direction, mul(normal, 2 * dot(direction, normal))))
 
+    def refract(this, direction, normal, ior):
+        etai = 1
+        etat = ior
+        cosi = (dot(direction, normal) * -1)
+
+        if cosi < 0:
+            cosi = -cosi
+            etai = etai * -1
+            etat = etat * -1
+            normal = mul(normal, -1)
+
+        eta = etai / etat
+        k = 1 - eta ** 2 * (1 - cosi ** 2)
+
+        if k < 0:
+            return color(0, 0, 0)
+
+        else: 
+            return norm(sumV3(mul(direction, eta), mul(normal, (eta * cosi - sqrt(k)))))
+
     def sceneIntersect(this, orig, direction):
         zbuffer = float('inf')
         newMaterial = this.clearColor
@@ -93,15 +114,24 @@ class Raytracer(object):
             shadowIntensity = 0.7 if shadowIntersect else 1
 
             if len(newMaterial.getAlbedo()) > 2 and newMaterial.getAlbedo()[2] > 0:
-                reverse = mul(direction, -1)
-                reflectDir = this.reflect(reverse, newIntersect.getNormal())
-                reflectOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), 1.1))
+                reflectDir = this.reflect(direction, newIntersect.getNormal())
+                reflectBias = 1.1 if dot(reflectDir, newIntersect.getNormal()) < 0 else -1.1
+                reflectOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), reflectBias))
                 reflectColor = this.castRay(reflectOrigin, reflectDir, recursion + 1)
                 reflectColor = reflectColor * newMaterial.getAlbedo()[2]
-
-                return ((diffuse + specular) * shadowIntensity + reflectColor)
             else:
-                return((diffuse + specular) * shadowIntensity)
+                reflectColor = color(0, 0, 0)
+
+            if len(newMaterial.getAlbedo()) > 3 and newMaterial.getAlbedo()[3] > 0:
+                refractDir = this.refract(direction, newIntersect.getNormal(), newMaterial.getRefract())
+                refractBias = -0.5 if dot(refractDir, newIntersect.getNormal()) < 0 else 0.5
+                refractOrigin = sumV3(newIntersect.getPoint(), mul(newIntersect.getNormal(), refractBias))
+                refractColor = this.castRay(refractOrigin, refractDir, recursion + 1)
+                refractColor = refractColor * newMaterial.getAlbedo()[3]
+            else:
+                refractColor = color(0, 0, 0)
+
+            return ((diffuse + specular) * shadowIntensity + reflectColor + refractColor)
       
         else:
             return(newMaterial.getColor())
