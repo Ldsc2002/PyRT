@@ -80,7 +80,8 @@ class Raytracer(object):
         newMaterial = this.clearColor
         newIntersect = None
         
-
+        if this.envMap:
+            newMaterial = this.envMap.getColor(direction)
 
         for object in this.scene:
             tempIntersect = object.intersect(orig, direction)
