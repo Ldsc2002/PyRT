@@ -9,6 +9,7 @@ objects = [
     sphere((-2, -1, -12), 2, glossRed),
     sphere((1, 1, -8), 1.7, glass),
     sphere((-2, 2, -10), 2, mirror),
+    plane((0, 4, -10), 6, 6, mirror)
 ]
 
 setLight((-20, 20, 20), 2, "white")

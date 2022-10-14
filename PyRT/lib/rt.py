@@ -1,6 +1,7 @@
 from PyRT.lib.utils import *
 from PyRT.figures.sphere import *
 from PyRT.figures.cube import *
+from PyRT.figures.plane import * 
 from PyRT.components.material import *
 from PyRT.components.intersect import *
 from PyRT.components.light import *
