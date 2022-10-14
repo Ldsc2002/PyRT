@@ -1,6 +1,6 @@
 import struct
 from collections import namedtuple
-from math import cos, sin, tan
+from math import cos, sin, tan, atan2, acos
 import importlib, os, sys
 
 V2 = namedtuple('Point2D', ['x', 'y'])

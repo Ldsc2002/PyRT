@@ -22,6 +22,7 @@ class Raytracer(object):
         this.lightSource = light((0, 0, 0), 1, (255, 255, 255))
         this.density = density
         this.maxRecursionDepth = 3
+        this.envMap = None
 
     def setRecursionDepth(this, depth: int) -> None:
         this.maxRecursionDepth = depth
@@ -79,6 +80,8 @@ class Raytracer(object):
         newMaterial = this.clearColor
         newIntersect = None
         
+
+
         for object in this.scene:
             tempIntersect = object.intersect(orig, direction)
 

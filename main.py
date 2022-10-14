@@ -6,10 +6,7 @@ glass = material("white", [0, 0.5, 0.1, 0.8], 125, 1.5)
 
 objects = [    
     sphere((0, -1.5, -10), 1.5, mirror),
-    sphere((-2, -1, -12), 2, glossRed),
-    sphere((1, 1, -8), 1.7, glass),
-    sphere((-2, 2, -10), 2, mirror),
-    plane((0, 4, -10), 6, 6, mirror)
+    cube((-2, 0, -10), 1, glossRed),
 ]
 
 setLight((-20, 20, 20), 2, "white")
