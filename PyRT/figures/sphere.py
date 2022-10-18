@@ -6,7 +6,7 @@ class sphere(figure):
         this.radius = radius
         this.material = material
 
-    def intersect(this, orig, dir) -> intersect:
+    def figureIntersect(this, orig, dir) -> intersect:
         L = sub(this.center, orig)
         tca = dot(L, dir)
         d2 = dot(L, L) - tca * tca

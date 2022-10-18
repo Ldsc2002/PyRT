@@ -7,7 +7,7 @@ class plane(figure):
         this.h = height
         this.material = material
 
-    def intersect(this, orig, direction) -> intersect:
+    def figureIntersect(this, orig, direction) -> intersect:
         d = (this.center.y - orig.y) / direction.y
         impact = sumV3(orig, mul(direction, d))
         normal = V3(0, -1, 0)

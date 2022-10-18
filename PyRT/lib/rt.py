@@ -4,6 +4,7 @@ from PyRT.figures.cube import *
 from PyRT.figures.plane import * 
 from PyRT.figures.triangle import *
 from PyRT.figures.pyramid import *
+from PyRT.figures.obj import *
 from PyRT.components.material import *
 from PyRT.components.intersect import *
 from PyRT.components.light import *
@@ -86,7 +87,7 @@ class Raytracer(object):
             newMaterial = this.envMap.getColor(direction)
 
         for object in this.scene:
-            tempIntersect = object.intersect(orig, direction)
+            tempIntersect = object.figureIntersect(orig, direction)
 
             if tempIntersect and tempIntersect.getDistance() < zbuffer:
                 newIntersect = tempIntersect

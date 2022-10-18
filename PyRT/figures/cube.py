@@ -6,7 +6,7 @@ class cube(figure):
         this.side = side
         this.material = material
 
-    def intersect(this, orig, direction) -> intersect:
+    def figureIntersect(this, orig, direction) -> intersect:
         tmin = float('-inf')
         tmax = float('inf')
 

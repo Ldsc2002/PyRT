@@ -7,7 +7,7 @@ class triangle(figure):
         this.vertices = newVertices
         this.material = material
 
-    def intersect(this, origin, direction):
+    def figureIntersect(this, origin, direction):
         v0, v1, v2 = this.vertices
         normal = cross(sub(v1, v0), sub(v2, v0))
         determinant = dot(normal, direction)

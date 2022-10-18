@@ -19,7 +19,7 @@ class pyramid(figure):
         ]
         return sides
 
-    def intersect(this, origin, direction):
+    def figureIntersect(this, origin, direction):
         t = float("inf")
         intersect = None
 
