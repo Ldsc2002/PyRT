@@ -27,6 +27,9 @@ class Raytracer(object):
         this.maxRecursionDepth = 3
         this.envMap = None
 
+    def setEnvMap(this, envMap):
+        this.envMap = envMap
+
     def setRecursionDepth(this, depth: int) -> None:
         this.maxRecursionDepth = depth
 
