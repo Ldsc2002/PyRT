@@ -2,28 +2,40 @@ from PyRT.figures.figure import *
 
 class triangle(figure):
     def __init__(this, vertices, material):
-        newVertices = [V3(*v) for v in vertices]
-
-        this.vertices = newVertices
+        this.vertices = [V3(*v) for v in vertices]
         this.material = material
 
-    def figureIntersect(this, origin, direction):
+    def figureIntersect(this, orig, direction) -> intersect:
         v0, v1, v2 = this.vertices
-        normal = cross(sub(v1, v0), sub(v2, v0))
-        determinant = dot(normal, direction)
 
-        if abs(determinant) < 0.0001:
-            return None
+        edge1 = sub(v1, v0)
+        edge2 = sub(v2, v0)
 
-        distance = dot(normal, v0)
-        t = (dot(normal, origin) + distance) / determinant
-        if t < 0:
-            return None
+        h = cross(direction, edge2)
+        a = dot(edge1, h)
 
-        point = sumV3(origin, mul(direction, t))
-        u, v, w = barycentric(v0, v1, v2, point)
-
-        if w < 0 or v < 0 or u < 0:
+        if a > -1e-6 and a < 1e-6:
             return None
         
-        return intersect(distance, point, norm(normal))
+        f = 1 / a
+        s = sub(orig, v0)
+        u = f * dot(s, h)
+
+        if u < 0 or u > 1:
+            return None
+
+        q = cross(s, edge1)
+        v = f * dot(direction, q)
+
+        if v < 0 or u + v > 1:
+            return None
+
+        t = f * dot(edge2, q)
+
+        if t > 1e-6:
+            impact = sumV3(orig, mul(direction, t))
+            normal = norm(cross(edge1, edge2))
+
+            return intersect(t, impact, normal)
+        
+        return None
